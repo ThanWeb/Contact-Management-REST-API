@@ -14,6 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.10.2",
     "bcrypt": "^5.1.1",
     "express": "^4.18.3",
     "winston": "^3.11.0",
