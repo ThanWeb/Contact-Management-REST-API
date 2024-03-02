@@ -1,13 +1,16 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": "standard-with-typescript",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "rules": {
-    }
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": "standard-with-typescript",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "ignorePatterns": ["**.json", "**.test.*"],
+  "rules": {
+    "@typescript-eslint/no-extraneous-class": 0,
+    "@typescript-eslint/no-misused-promises": 0
+  }
 }
