@@ -17,6 +17,11 @@ export interface LoginUserRequest {
   password: string
 }
 
+export interface UpdateUserRequest {
+  name?: string
+  password?: string
+}
+
 export function toUserResponse (user: User): UserResponse {
   return {
     name: user.name,

@@ -1,5 +1,9 @@
 import type { Request, Response, NextFunction } from 'express'
-import { type LoginUserRequest, type CreateUserRequest } from '../model/user-model'
+import {
+  type LoginUserRequest,
+  type CreateUserRequest,
+  type UpdateUserRequest
+} from '../model/user-model'
 import { UserService } from '../service/user-service'
 import { type UserRequest } from '../type/user-request'
 
@@ -41,6 +45,23 @@ export class UserController {
 
         res.status(200).json({
           error: false,
+          data: response
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static update = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const request: UpdateUserRequest = req.body as UpdateUserRequest
+        const response = await UserService.update(req.user, request)
+
+        res.status(200).json({
+          error: false,
+          message: 'update user success',
           data: response
         })
       }

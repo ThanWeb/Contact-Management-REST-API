@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { prismaClient } from '../src/application/database'
+import { type User } from '@prisma/client'
 
 export class UserTest {
   static async delete (): Promise<void> {
@@ -19,5 +20,19 @@ export class UserTest {
         token: 'test'
       }
     })
+  }
+
+  static async get (): Promise<User> {
+    const user = await prismaClient.user.findUnique({
+      where: {
+        username: 'test'
+      }
+    })
+
+    if (user == null) {
+      throw new Error('user is not found')
+    }
+
+    return user
   }
 }
