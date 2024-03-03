@@ -36,3 +36,13 @@ export class UserTest {
     return user
   }
 }
+
+export class ContactTest {
+  static async deleteAll (): Promise<void> {
+    await prismaClient.contact.deleteMany({
+      where: {
+        username: 'test'
+      }
+    })
+  }
+}

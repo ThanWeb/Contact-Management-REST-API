@@ -51,7 +51,7 @@ describe('POST /api/users', () => {
       })
 
     logger.debug(response.body)
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(201)
     expect(response.body.error).toBe(false)
     expect(response.body.message).toBe('registration success')
     expect(response.body.data.username).toBe('test')

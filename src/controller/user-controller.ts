@@ -13,7 +13,7 @@ export class UserController {
       const request: CreateUserRequest = req.body as CreateUserRequest
       const response = await UserService.register(request)
 
-      res.status(200).json({
+      res.status(201).json({
         error: false,
         message: 'registration success',
         data: response
