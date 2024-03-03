@@ -11,3 +11,4 @@ publicRouter.get('/api/', (req: Request, res: Response, next: NextFunction) => {
 })
 
 publicRouter.post('/api/users', UserController.register)
+publicRouter.post('/api/users/login', UserController.login)
