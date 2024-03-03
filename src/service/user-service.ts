@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
+import { type User } from '@prisma/client'
 import { prismaClient } from '../application/database'
 import { ResponseError } from '../error/response-error'
 import {
@@ -69,5 +70,9 @@ export class UserService {
     }
 
     return response
+  }
+
+  static async get (user: User): Promise<UserResponse> {
+    return toUserResponse(user)
   }
 }
