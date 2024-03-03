@@ -69,4 +69,19 @@ export class UserController {
       next(error)
     }
   }
+
+  static logout = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        await UserService.logout(req.user)
+
+        res.status(200).json({
+          error: false,
+          message: 'logout success'
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
 }

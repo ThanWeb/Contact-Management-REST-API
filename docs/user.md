@@ -150,7 +150,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "OK",
+  "message": "logout success",
 }
 ```
 
