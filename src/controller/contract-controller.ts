@@ -20,4 +20,20 @@ export class ContactController {
       next(error)
     }
   }
+
+  static get = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const contactId = Number(req.params.contactId)
+        const response = await ContactService.get(req.user, contactId)
+
+        res.status(200).json({
+          error: false,
+          data: response
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
 }

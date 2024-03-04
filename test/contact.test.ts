@@ -103,3 +103,42 @@ describe('POST /api/contacts', () => {
     expect(response.body.data.phone).toBe('081018198211')
   })
 })
+
+describe('GET /api/contacts/:contactId', () => { 
+  beforeEach(async () => {
+    await UserTest.create()
+    await ContactTest.create()
+  })
+
+  afterEach(async () => {
+    await ContactTest.deleteAll()
+    await UserTest.delete()
+  })
+
+  it ('should reject get contact is contat is not found', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .get(`/api/contacts/${contact.id + 2}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(404)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should be able to get contacts', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .get(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.first_name).toBe(contact.first_name)
+    expect(response.body.data.last_name).toBe(contact.last_name)
+    expect(response.body.data.email).toBe(contact.email)
+    expect(response.body.data.phone).toBe(contact.phone)
+  })
+})
