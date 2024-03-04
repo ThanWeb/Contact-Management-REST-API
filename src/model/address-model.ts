@@ -23,6 +23,16 @@ export interface GetAddressRequest {
   id: number
 }
 
+export interface UpdateAddressRequest {
+  id: number
+  contact_id: number
+  street?: string
+  city?: string
+  province?: string
+  country: string
+  postal_code: string
+}
+
 export function toAddressResponse (address: Address): AddressResponse {
   return {
     id: address.id,
