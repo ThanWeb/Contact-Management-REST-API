@@ -152,7 +152,6 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact created",
   "data": [
     {
       "id": 1,

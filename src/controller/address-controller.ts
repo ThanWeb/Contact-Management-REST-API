@@ -81,4 +81,20 @@ export class AddressController {
       next(error)
     }
   }
+
+  static list = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const contactId = Number(req.params.contactId)
+        const response = await AddressService.list(req.user, contactId)
+
+        res.status(200).json({
+          error: false,
+          data: response
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
 }
