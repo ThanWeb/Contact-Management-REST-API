@@ -143,7 +143,7 @@ describe('GET /api/contacts/:contactId', () => {
   })
 })
 
-describe('PUY /api/contacts/:contactId', () => { 
+describe('PUT /api/contacts/:contactId', () => { 
   beforeEach(async () => {
     await UserTest.create()
     await ContactTest.create()
@@ -278,5 +278,41 @@ describe('PUY /api/contacts/:contactId', () => {
     expect(response.body.data.last_name).toBe('rio')
     expect(response.body.data.email).toBe('hans@example.com')
     expect(response.body.data.phone).toBe('0831115111211')
+  })
+})
+
+describe('DELETE /api/contacts/:contactId', () => { 
+  beforeEach(async () => {
+    await UserTest.create()
+    await ContactTest.create()
+  })
+
+  afterEach(async () => {
+    await ContactTest.deleteAll()
+    await UserTest.delete()
+  })
+
+  it ('should reject to remove contact when contact is not found', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .delete(`/api/contacts/${contact.id + 1}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(404)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should be able to remove contact', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .delete(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.message).toBe('contact deleted')
   })
 })

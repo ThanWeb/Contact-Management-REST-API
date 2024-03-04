@@ -2,6 +2,7 @@ import type { Response, NextFunction } from 'express'
 import type { UpdateContactRequest, CreateContactRequest } from '../model/contact-model'
 import { ContactService } from '../service/contact-service'
 import { type UserRequest } from '../type/user-request'
+import { logger } from '../application/logging'
 
 export class ContactController {
   static create = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
@@ -48,6 +49,23 @@ export class ContactController {
           error: false,
           message: 'contact updated',
           data: response
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static remove = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const contactId = Number(req.params.contactId)
+        const response = await ContactService.remove(req.user, contactId)
+        logger.debug(`response: ${JSON.stringify(response)}`)
+
+        res.status(200).json({
+          error: false,
+          message: 'contact deleted'
         })
       }
     } catch (error) {

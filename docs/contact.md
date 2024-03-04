@@ -124,7 +124,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "OK"
+  "message": "contact deleted"
 }
 ```
 
