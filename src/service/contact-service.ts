@@ -1,9 +1,10 @@
 import { type Contact, type User } from '@prisma/client'
-import { toContactResponse, type ContactResponse, type CreateContactRequest, type UpdateContactRequest } from '../model/contact-model'
+import { toContactResponse, type ContactResponse, type CreateContactRequest, type UpdateContactRequest, type SearchContactRequest } from '../model/contact-model'
 import { ContactValidation } from '../validation/contact-validation'
 import { Validation } from '../validation/validation'
 import { prismaClient } from '../application/database'
 import { ResponseError } from '../error/response-error'
+import { type PageAble } from '../model/page'
 
 export class ContactService {
   static async create (user: User, request: CreateContactRequest): Promise<ContactResponse> {
@@ -65,5 +66,69 @@ export class ContactService {
     })
 
     return toContactResponse(contact)
+  }
+
+  static async search (user: User, request: SearchContactRequest): Promise<PageAble<ContactResponse>> {
+    const searchRequest = Validation.validate(ContactValidation.SEARCH, request)
+    const skip = ((searchRequest.page - 1) * searchRequest.size)
+    const filters = []
+
+    if (searchRequest.name !== undefined) {
+      filters.push({
+        OR: [
+          {
+            first_name: {
+              contains: searchRequest.name
+            }
+          },
+          {
+            last_name: {
+              contains: searchRequest.name
+            }
+          }
+        ]
+      })
+    }
+
+    if (searchRequest.email !== undefined) {
+      filters.push({
+        email: {
+          contains: searchRequest.email
+        }
+      })
+    }
+
+    if (searchRequest.phone !== undefined) {
+      filters.push({
+        phone: {
+          contains: searchRequest.phone
+        }
+      })
+    }
+
+    const contacts = await prismaClient.contact.findMany({
+      where: {
+        username: user.username,
+        AND: filters
+      },
+      take: searchRequest.size,
+      skip
+    })
+
+    const total = await prismaClient.contact.count({
+      where: {
+        username: user.username,
+        AND: filters
+      }
+    })
+
+    return {
+      data: contacts.map(contact => toContactResponse(contact)),
+      paging: {
+        current_page: searchRequest.page,
+        total_page: Math.ceil(total / searchRequest.size),
+        size: searchRequest.size
+      }
+    }
   }
 }

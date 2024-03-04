@@ -316,3 +316,115 @@ describe('DELETE /api/contacts/:contactId', () => {
     expect(response.body.message).toBe('contact deleted')
   })
 })
+
+describe('GET /api/contacts', () => { 
+  beforeEach(async () => {
+    await UserTest.create()
+    await ContactTest.create()
+  })
+
+  afterEach(async () => {
+    await ContactTest.deleteAll()
+    await UserTest.delete()
+  })
+
+  it ('should be able to search contact without any query', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(1)
+    expect(response.body.paging.current_page).toBe(1)
+    expect(response.body.paging.total_page).toBe(1)
+    expect(response.body.paging.size).toBe(10)
+  })
+
+  it ('should be able to search contact with correct query name', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .query({
+        name: 'st'
+      })
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(1)
+    expect(response.body.paging.current_page).toBe(1)
+    expect(response.body.paging.total_page).toBe(1)
+    expect(response.body.paging.size).toBe(10)
+  })
+
+  it ('should be able to search contact with wrong query name', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .query({
+        name: 'sta'
+      })
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(0)
+    expect(response.body.paging.current_page).toBe(1)
+    expect(response.body.paging.total_page).toBe(0)
+    expect(response.body.paging.size).toBe(10)
+  })
+
+  it ('should be able to search contact with correct query email', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .query({
+        email: 'exam'
+      })
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(1)
+    expect(response.body.paging.current_page).toBe(1)
+    expect(response.body.paging.total_page).toBe(1)
+    expect(response.body.paging.size).toBe(10)
+  })
+
+  it ('should be able to search contact with correct query phone', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .query({
+        phone: '08'
+      })
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(1)
+    expect(response.body.paging.current_page).toBe(1)
+    expect(response.body.paging.total_page).toBe(1)
+    expect(response.body.paging.size).toBe(10)
+  })
+
+  it ('should be able to search contact with paging', async () => {
+    const response = await request(web)
+      .get('/api/contacts')
+      .query({
+        page: 2,
+        size: 1
+      })
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.length).toBe(0)
+    expect(response.body.paging.current_page).toBe(2)
+    expect(response.body.paging.total_page).toBe(1)
+    expect(response.body.paging.size).toBe(1)
+  })
+})

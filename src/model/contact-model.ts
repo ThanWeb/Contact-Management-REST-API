@@ -23,6 +23,14 @@ export interface UpdateContactRequest {
   phone?: string
 }
 
+export interface SearchContactRequest {
+  name?: string
+  email?: string
+  phone?: string
+  page: number
+  size: number
+}
+
 export function toContactResponse (contact: Contact): ContactResponse {
   return {
     id: contact.id,

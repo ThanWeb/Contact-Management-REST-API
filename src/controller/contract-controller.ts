@@ -1,5 +1,5 @@
 import type { Response, NextFunction } from 'express'
-import type { UpdateContactRequest, CreateContactRequest } from '../model/contact-model'
+import type { UpdateContactRequest, CreateContactRequest, SearchContactRequest } from '../model/contact-model'
 import { ContactService } from '../service/contact-service'
 import { type UserRequest } from '../type/user-request'
 import { logger } from '../application/logging'
@@ -66,6 +66,30 @@ export class ContactController {
         res.status(200).json({
           error: false,
           message: 'contact deleted'
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static search = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const request: SearchContactRequest = {
+          name: req.query.name as string,
+          email: req.query.email as string,
+          phone: req.query.phone as string,
+          page: req.query.page !== undefined ? Number(req.query.page) : 1,
+          size: req.query.size !== undefined ? Number(req.query.size) : 10
+        }
+
+        const response = await ContactService.search(req.user, request)
+        logger.debug(`response: ${JSON.stringify(response)}`)
+
+        res.status(200).json({
+          error: false,
+          ...response
         })
       }
     } catch (error) {
