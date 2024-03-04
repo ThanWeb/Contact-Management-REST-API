@@ -33,6 +33,11 @@ export interface UpdateAddressRequest {
   postal_code: string
 }
 
+export interface RemoveAddressRequest {
+  contact_id: number
+  id: number
+}
+
 export function toAddressResponse (address: Address): AddressResponse {
   return {
     id: address.id,

@@ -240,3 +240,56 @@ describe('UPDATE /api/contacts/:contactId/addresses/:addressId', () => {
     expect(response.body.data.postal_code).toBe('654321')
   })
 })
+
+describe('DELETE /api/contacts/:contactId/addresses/:addressId', () => {
+  beforeEach(async () => {
+    await UserTest.create()
+    await ContactTest.create()
+    await AddressTest.create()
+  })
+
+  afterEach(async () => {
+    await AddressTest.deleteAll()
+    await ContactTest.deleteAll()
+    await UserTest.delete()
+  })
+
+  it ('should not be able to remove address when contact is not found', async () => {
+    const contact = await ContactTest.get()
+    const address = await AddressTest.get()
+    const response = await request(web)
+      .delete(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(404)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should not be able to update address when address is not found', async () => {
+    const contact = await ContactTest.get()
+    const address = await AddressTest.get()
+    const response = await request(web)
+      .delete(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(404)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should be able to remove address', async () => {
+    const contact = await ContactTest.get()
+    const address = await AddressTest.get()
+    const response = await request(web)
+      .delete(`/api/contacts/${contact.id}/addresses/${address.id}`)
+      .set('X-API-TOKEN', 'test')
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.message).toBe('address removed')
+  })
+})

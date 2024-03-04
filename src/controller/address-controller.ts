@@ -1,6 +1,6 @@
 import type { Response, NextFunction } from 'express'
 import { type UserRequest } from '../type/user-request'
-import { type GetAddressRequest, type CreateAddressRequest, type UpdateAddressRequest } from '../model/address-model'
+import type { GetAddressRequest, CreateAddressRequest, UpdateAddressRequest, RemoveAddressRequest } from '../model/address-model'
 import { AddressService } from '../service/address-service'
 
 export class AddressController {
@@ -55,6 +55,26 @@ export class AddressController {
           error: false,
           message: 'address updated',
           data: response
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static remove = async (req: UserRequest, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (req.user !== undefined) {
+        const request: RemoveAddressRequest = {
+          id: Number(req.params.addressId),
+          contact_id: Number(req.params.contactId)
+        }
+
+        await AddressService.remove(req.user, request)
+
+        res.status(200).json({
+          error: false,
+          message: 'address removed'
         })
       }
     } catch (error) {
