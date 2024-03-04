@@ -127,7 +127,7 @@ describe('GET /api/contacts/:contactId', () => {
     expect(response.body.message).toBeDefined()
   })
 
-  it ('should be able to get contacts', async () => {
+  it ('should be able to get contact', async () => {
     const contact = await ContactTest.get()
     const response = await request(web)
       .get(`/api/contacts/${contact.id}`)
@@ -140,5 +140,143 @@ describe('GET /api/contacts/:contactId', () => {
     expect(response.body.data.last_name).toBe(contact.last_name)
     expect(response.body.data.email).toBe(contact.email)
     expect(response.body.data.phone).toBe(contact.phone)
+  })
+})
+
+describe('PUY /api/contacts/:contactId', () => { 
+  beforeEach(async () => {
+    await UserTest.create()
+    await ContactTest.create()
+  })
+
+  afterEach(async () => {
+    await ContactTest.deleteAll()
+    await UserTest.delete()
+  })
+
+  it ('should reject to update contact when contact is not found', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id + 1}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: 'hans',
+        last_name: 'rio',
+        email: 'hans@example.com',
+        phone: '0831115111211'
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(404)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should reject to update contact when data is not exist', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({})
+
+    logger.debug(response.body)
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+
+  it ('should reject to update contact when data invalid', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: '',
+        last_name: 'rio',
+        email: 'hans@example.com',
+        phone: '0831115111211'
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+  
+  it ('should reject to update contact when data invalid', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: 'hans',
+        last_name: '',
+        email: 'hans@example.com',
+        phone: '0831115111211'
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should reject to update contact when data invalid', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: 'hans',
+        last_name: 'rio',
+        email: '',
+        phone: '0831115111211'
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should reject to update contact when data invalid', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: 'hans',
+        last_name: 'rio',
+        email: 'hans@example.com',
+        phone: 831115111211
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe(true)
+    expect(response.body.message).toBeDefined()
+  })
+
+  it ('should be able to update contact', async () => {
+    const contact = await ContactTest.get()
+    const response = await request(web)
+      .put(`/api/contacts/${contact.id}`)
+      .set('X-API-TOKEN', 'test')
+      .send({
+        first_name: 'hans',
+        last_name: 'rio',
+        email: 'hans@example.com',
+        phone: '0831115111211'
+      })
+
+    logger.debug(response.body)
+    expect(response.status).toBe(200)
+    expect(response.body.error).toBe(false)
+    expect(response.body.data.id).toBe(contact.id)
+    expect(response.body.data.first_name).toBe('hans')
+    expect(response.body.data.last_name).toBe('rio')
+    expect(response.body.data.email).toBe('hans@example.com')
+    expect(response.body.data.phone).toBe('0831115111211')
   })
 })

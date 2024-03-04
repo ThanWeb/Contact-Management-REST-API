@@ -1,5 +1,5 @@
-import { type User } from '@prisma/client'
-import { toContactResponse, type ContactResponse, type CreateContactRequest } from '../model/contact-model'
+import { type Contact, type User } from '@prisma/client'
+import { toContactResponse, type ContactResponse, type CreateContactRequest, type UpdateContactRequest } from '../model/contact-model'
 import { ContactValidation } from '../validation/contact-validation'
 import { Validation } from '../validation/validation'
 import { prismaClient } from '../application/database'
@@ -19,17 +19,37 @@ export class ContactService {
     return toContactResponse(contact)
   }
 
-  static async get (user: User, id: number): Promise<ContactResponse> {
+  static async checkContactMustExist (username: string, id: number): Promise<Contact> {
     const contact = await prismaClient.contact.findUnique({
       where: {
         id,
-        username: user.username
+        username
       }
     })
 
     if (contact == null) {
       throw new ResponseError(404, 'contact not found')
     }
+
+    return contact
+  }
+
+  static async get (user: User, id: number): Promise<ContactResponse> {
+    const contact = await this.checkContactMustExist(user.username, id)
+    return toContactResponse(contact)
+  }
+
+  static async update (user: User, request: UpdateContactRequest): Promise<ContactResponse> {
+    const updateRequest = Validation.validate(ContactValidation.UPDATE, request)
+    await this.checkContactMustExist(user.username, request.id)
+
+    const contact = await prismaClient.contact.update({
+      where: {
+        id: updateRequest.id,
+        username: user.username
+      },
+      data: updateRequest
+    })
 
     return toContactResponse(contact)
   }
