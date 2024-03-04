@@ -29,7 +29,7 @@ export class ContactService {
     })
 
     if (contact == null) {
-      throw new ResponseError(404, 'contact not found')
+      throw new ResponseError(404, 'contact is not found')
     }
 
     return contact

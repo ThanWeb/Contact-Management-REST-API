@@ -54,7 +54,6 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact created",
   "data": {
     "id": 1,
     "street": "street name",
@@ -97,7 +96,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact created",
+  "message": "address updated",
   "data": {
     "id": 1,
     "street": "street name",
@@ -129,7 +128,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "OK"
+  "message": "address removed"
 }
 ```
 

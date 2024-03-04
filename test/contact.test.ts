@@ -313,7 +313,7 @@ describe('DELETE /api/contacts/:contactId', () => {
     logger.debug(response.body)
     expect(response.status).toBe(200)
     expect(response.body.error).toBe(false)
-    expect(response.body.message).toBe('contact deleted')
+    expect(response.body.message).toBe('contact removed')
   })
 })
 

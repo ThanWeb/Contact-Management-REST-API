@@ -65,7 +65,7 @@ export class ContactController {
 
         res.status(200).json({
           error: false,
-          message: 'contact deleted'
+          message: 'contact removed'
         })
       }
     } catch (error) {

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import { prismaClient } from '../src/application/database'
-import type { Contact, User } from '@prisma/client'
+import type { Address, Contact, User } from '@prisma/client'
 
 export class UserTest {
   static async delete (): Promise<void> {
@@ -82,5 +82,35 @@ export class AddressTest {
         }
       }
     })
+  }
+
+  static async create (): Promise<void> {
+    const contact = await ContactTest.get()
+    await prismaClient.address.create({
+      data: {
+        contact_id: contact.id,
+        street: 'street test',
+        city: 'city test',
+        province: 'province test',
+        country: 'country test',
+        postal_code: '123456'
+      }
+    })
+  }
+
+  static async get (): Promise<Address> {
+    const address = await prismaClient.address.findFirst({
+      where: {
+        contact: {
+          username: 'test'
+        }
+      }
+    })
+
+    if (address == null) {
+      throw new Error('address is not found')
+    }
+
+    return address
   }
 }

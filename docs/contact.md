@@ -52,7 +52,6 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact created",
   "data": {
     "id": 1,
     "first_name": "Hans",
@@ -124,7 +123,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact deleted"
+  "message": "contact removed"
 }
 ```
 
