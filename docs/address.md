@@ -22,7 +22,7 @@ Response Body (Success):
 ```json
 {
   "error": false,
-  "message": "contact created",
+  "message": "address created",
   "data": {
     "id": 1,
     "street": "street name",
